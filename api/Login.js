@@ -25,7 +25,7 @@ const login=async ({email,password})=>{
           return response;
     }catch(error){
         console.log("Error","Something went wrong. Please try again later.")
-        console.error("Login error: ",error)
+        console.error("Login error: ",)
     }
 
 }
