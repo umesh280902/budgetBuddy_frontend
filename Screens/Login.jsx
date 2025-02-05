@@ -72,7 +72,7 @@ const Login = () => {
       >
         <TextInput
           onChangeText={(text) => setEmail(text)}
-          placeholder="Karan@gmail,com..."
+          placeholder="karan@gmail.com..."
           style={{
             backgroundColor: "#F0F8FF",
             paddingVertical: 5,
@@ -86,6 +86,7 @@ const Login = () => {
         <TextInput
           onChangeText={(text) => setPassword(text)}
           placeholder="Password"
+          secureTextEntry
           style={{
             backgroundColor: "#F0F8FF",
             paddingVertical: 5,

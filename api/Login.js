@@ -13,7 +13,7 @@ const login=async ({email,password})=>{
     }
 
     console.log(payload)
-
+    console.log(apiUrl)
     try{
         const response = await fetch(`${apiUrl}/auth/login`, {
             method: "POST",
@@ -25,7 +25,7 @@ const login=async ({email,password})=>{
           return response;
     }catch(error){
         console.log("Error","Something went wrong. Please try again later.")
-        console.error("Login error: ",)
+        console.error("Login error: ",error)
     }
 
 }

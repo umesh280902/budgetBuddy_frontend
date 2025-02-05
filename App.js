@@ -19,6 +19,7 @@ import Resources from "./Screens/Resources";
 import Signup from "./Screens/Signup";
 import Transaction from "./Screens/Transaction";
 import Upload from "./Screens/Upload";
+import Otp from "./Screens/Otp";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -150,7 +151,11 @@ function App() {
           component={Signup}
           options={{ headerShown: false }}
         />
-
+        <Stack.Screen
+          name="otp"
+          component={Otp}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Main"
           component={BottomTabs}
