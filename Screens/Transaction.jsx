@@ -2,6 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { React, useEffect, useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 
 import {
   Button,
@@ -17,10 +18,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import getAllTransactions from "../api/Transaction/AllTransactions";
 import createTransaction from "../api/Transaction/PostTransaction";
 const Transaction = () => {
-  const [amount, setAmount] = useState("");
-  const [to, setTo] = useState("");
+  const [Amount, setAmount] = useState("");
+  const [To, setTo] = useState("");
   const [category, setCategory] = useState("");
   const [transaction, setTransaction] = useState([]);
+  const [type,setType] = useState("");
   // const lt = [
   //   {
   //     To: "Starbucks",
@@ -72,14 +74,18 @@ const Transaction = () => {
   //   },
   // ];
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     //onSubmit({ amount, to, category });
-    console.log(amount, to, category);
+
+    await postTransaction();
+    console.log(Amount, To, category,type);
+    getTransaction(); // Fetch updated transactions
+
     setAmount("");
     setTo("");
     setCategory("");
     onClose();
-    postTransaction();
+   
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -87,7 +93,7 @@ const Transaction = () => {
   const onClose = () => setIsVisible(false);
 
   const postTransaction = async () => {
-    const response = await createTransaction({ amount, to, category });
+    const response = await createTransaction({ Amount, To, category, type });
     // Check if the response is ok (status code 200-299)
     if (response.ok) {
       const data = await response.json();
@@ -99,19 +105,21 @@ const Transaction = () => {
     }
   };
 
+  const getTransaction = async () => {
+    const response = await getAllTransactions();
+    if (response.ok) {
+      const data = await response.json();
+      console.log("transaction data", data);
+      setTransaction(data);
+    } else {
+      const errorData = await response.json();
+      console.log("response failed");
+      console.log(errorData);
+    }
+  };
+
   useEffect(() => {
-    const getTransaction = async () => {
-      const response = await getAllTransactions();
-      if (response.ok) {
-        const data = await response.json();
-        console.log("transaction data", data);
-        setTransaction(data);
-      } else {
-        const errorData = await response.json();
-        console.log("response failed");
-        console.log(errorData);
-      }
-    };
+   
 
     getTransaction();
   }, []);
@@ -161,44 +169,63 @@ const Transaction = () => {
           </View>
         </TouchableOpacity>
         <Modal
-          visible={isVisible}
-          onRequestClose={() => setIsVisible(false)}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.title}>Enter Details</Text>
+      visible={isVisible}
+      onRequestClose={() => onClose()}
+      animationType="slide"
+      transparent={true}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.title}>Enter Details</Text>
 
-              <TextInput
-                placeholder="Amount"
-                value={amount}
-                onChangeText={setAmount}
-                style={styles.input}
-                keyboardType="numeric"
-              />
+          <TextInput
+            placeholder="Amount"
+            value={Amount}
+            onChangeText={setAmount}
+            style={styles.input}
+            keyboardType="numeric"
+          />
 
-              <TextInput
-                placeholder="To"
-                value={to}
-                onChangeText={setTo}
-                style={styles.input}
-              />
+          <TextInput
+            placeholder="To"
+            value={To}
+            onChangeText={setTo}
+            style={styles.input}
+          />
 
-              <TextInput
-                placeholder="Category"
-                value={category}
-                onChangeText={setCategory}
-                style={styles.input}
-              />
+          {/* Type Dropdown (Credit/Debit) */}
+          <Picker
+            selectedValue={type}
+            onValueChange={(itemValue) => setType(itemValue)}
+            style={styles.input}
+          >
+            <Picker.Item label="Select Type" value="" />
+            <Picker.Item label="Credit" value="credit" />
+            <Picker.Item label="Debit" value="debit" />
+          </Picker>
 
-              <View style={styles.buttonContainer}>
-                <Button title="Cancel" onPress={onClose} color="red" />
-                <Button title="Submit" onPress={handleSubmit} color="green" />
-              </View>
-            </View>
+          {/* Category Dropdown */}
+          <Picker
+            selectedValue={category}
+            onValueChange={(itemValue) => setCategory(itemValue)}
+            style={styles.input}
+          >
+            <Picker.Item label="Select Category" value="" />
+            <Picker.Item label="Food" value="food" />
+            <Picker.Item label="Entertainment" value="entertainment" />
+            <Picker.Item label="Tour/Travel" value="tour/travel" />
+            <Picker.Item label="Fashion" value="fashion" />
+            <Picker.Item label="Academics" value="academics" />
+            <Picker.Item label="Others" value="others" />
+          </Picker>
+
+          <View style={styles.buttonContainer}>
+            <Button title="Cancel" onPress={onClose} color="red" />
+            <Button title="Submit" onPress={handleSubmit} color="green" />
           </View>
-        </Modal>
+        </View>
+      </View>
+    </Modal>
       </View>
 
       {/* Horizontal ScrollView */}

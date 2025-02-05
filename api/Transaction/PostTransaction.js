@@ -1,14 +1,15 @@
 import getToken from "../Token/GetToken"
 import {API_URL} from "@env"
 const apiUrl=API_URL
-const createTransaction=async ({amount,to,category})=>{
+const createTransaction=async ({Amount,To,category,type})=>{
     const token=await getToken()
     const payload = {
-        Amount: amount,
-        To: to,
+        Amount: Amount,
+        To: To,
         category: category,
+        type:type,
       };
-
+      console.log(payload)
       try {
         const response = await fetch(`${apiUrl}/transactions/`, {
           method: "POST",

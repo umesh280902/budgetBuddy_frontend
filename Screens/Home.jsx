@@ -76,21 +76,29 @@ const Home = () => {
   //     Date: "19-09-2024",
   //   },
   // ];
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const recentTransaction = async () => {
-      const response = await getRecentTransaction();
-      if (response.ok) {
+    const fetchTransactions = async () => {
+      try {
+        const response = await getRecentTransaction();
+        if (!response.ok) throw new Error("Failed to fetch transactions");
         const data = await response.json();
-        console.log("transaction data", data);
         setTransaction(data);
-      } else {
-        const errorData = await response.json();
-        console.log("response failed");
-        console.log(errorData);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    recentTransaction();
+  
+    fetchTransactions(); // Initial call on page load
+  
+    const interval = setInterval(fetchTransactions, 5000); // Refresh every 5 seconds
+  
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
+  
 
   return (
     <View style={styles.Screen}>
