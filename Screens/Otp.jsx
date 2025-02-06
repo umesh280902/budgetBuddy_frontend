@@ -8,8 +8,8 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import signup from "../api/Signup";
 const { width } = Dimensions.get("window");
+import Otp from "../api/Otp";
 
 const OtpVerification = () => {
   const navigation = useNavigation();
@@ -36,11 +36,14 @@ const OtpVerification = () => {
     if (enteredOtp.length === 4) {
       console.log("OTP entered:", enteredOtp);
       // Add OTP verification logic here
-      const response = await signup(form);
-      if (response){
-        console.log("Signup successful", response);
+      const response= await Otp({email,otp})
+      console.log(response)
+      if(response){
         navigation.navigate("Main"); // Navigate to the next page after verification
+      }else{
+         console.log("OTP is wrong")
       }
+  
     }
   };
 

@@ -15,6 +15,7 @@ import {
   Keyboard,
 } from "react-native";
  // Import the signup function
+ import signup from "../api/Signup";
 
 const { height, width } = Dimensions.get("window");
 
@@ -32,12 +33,13 @@ const Signup = () => {
     setForm({ ...form, [key]: value });
   };
 
-  const handleSignup = () => {
-    // const response = await signup(form);
-    // if (response) {
-      // console.log("Signup successful", response);
-      navigation.navigate("otp",{form});
-    // }
+  const handleSignup = async () => {
+    const response = await signup(form);
+    if (response) {
+      const data=await response.json()
+       console.log("Signup successful", data);
+       navigation.navigate("otp",{form});
+    }
   };
 
   return (
