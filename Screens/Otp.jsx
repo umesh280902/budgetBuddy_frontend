@@ -1,4 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
+import saveToken from "../api/Token/SetToken";
 import React, { useState, useRef } from "react";
 import {
   View,
@@ -35,17 +36,25 @@ const OtpVerification = () => {
     const enteredOtp = otp.join("");
     if (enteredOtp.length === 4) {
       console.log("OTP entered:", enteredOtp);
-      // Add OTP verification logic here
-      const response= await Otp({email,otp})
-      console.log(response)
-      if(response){
-        navigation.navigate("Main"); // Navigate to the next page after verification
-      }else{
-         console.log("OTP is wrong")
-      }
   
+      try {
+        const response = await Otp({ email, otp });
+        const data = await response.json(); // Correctly parse JSON
+        
+        console.log("Backend Response:", data);
+  
+        if (response.ok) {
+          saveToken(data.token)
+          navigation.navigate("Main"); // Navigate if response is successful
+        } else {
+          console.log("OTP is incorrect:", data.message); // Log the error message
+        }
+      } catch (error) {
+        console.log("Error verifying OTP:", error);
+      }
     }
   };
+  
 
   return (
     <View style={styles.container}>
